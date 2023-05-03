@@ -1,0 +1,9 @@
+﻿<Application x:Class="Preddiplom_practice.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Preddiplom_practice"
+             StartupUri="Windows/MainWindow.xaml">
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>
