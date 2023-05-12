@@ -1,0 +1,65 @@
+﻿<Window x:Class="Preddiplom_practice.Windows.Basket"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Preddiplom_practice.Windows"
+        mc:Ignorable="d"
+        Title="Basket" Height="450" Width="800" Background="#76e383" MinWidth="800" MinHeight="450" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="320*"/>
+            <RowDefinition Height="50*"/>
+        </Grid.RowDefinitions>
+        <ListView x:Name="myList" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Grid.Row="0" SelectionChanged="myList_SelectionChanged">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Black" Background="{Binding ListItemBackground}" BorderThickness="1" Grid.RowSpan="11" Grid.ColumnSpan="2">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150*"/>
+                                <ColumnDefinition Width="350*"/>
+                                <ColumnDefinition Width="100*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Image Height="100" Width="150" Grid.Column="0" Source="{Binding ProductPhoto}" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Fill"></Image>
+
+                            <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center" Margin="10,5">
+                                <TextBlock Text="{Binding ProductName}" FontSize="22" FontWeight="Bold"></TextBlock>
+                                <TextBlock Text="{Binding ProductDescription}" ></TextBlock>
+                                <TextBlock x:Name="ManufacturerLabel" Text="{Binding ProductManufacturer.ProductManufacturerName, StringFormat='Производитель: {0}'}"></TextBlock>
+                                <TextBlock TextDecorations="{Binding Decorations}" Text="{Binding ProductCost, StringFormat='Цена: {0}'}"></TextBlock>
+                                <TextBlock Text="{Binding DiscountPrice}" Foreground="Red" Visibility="{Binding IsVisible}"></TextBlock>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ProductDiscountAmount, StringFormat='Размер скидки: {0}%'}"></TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="50*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="OrderResult" Content="Сформировать заказ" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="240" FontSize="20" FontWeight="Bold" FontFamily="Times New Roman" Background="#498c51" Click="AddOrder_Click" Grid.Column="1" Margin="0,0,10,0">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <ComboBox x:Name="PointOfIssue"  HorizontalAlignment="Stretch" Margin="-3,0,0,0" Grid.Row="2" Grid.Column="0"  VerticalAlignment="Center" Width="200"
+                  IsEditable="True" IsReadOnly="True" Text="Пункт выдачи" HorizontalContentAlignment="Left"/>
+            <Label x:Name="UserLabel" Grid.Column="2" Content="Marat" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="14"/>
+        </Grid>
+    </Grid>
+</Window>

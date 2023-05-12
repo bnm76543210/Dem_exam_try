@@ -27,7 +27,7 @@
             <TextBox x:Name="Search" Grid.Column="1" Margin="10,0,10,0" VerticalContentAlignment="Center" TextChanged="Search_TextChanged"/>
             <Label x:Name="Quantity" Grid.Column="2" Content="0 из 0" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="16"/>
         </Grid>
-        <ListView x:Name="myList" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Grid.Row="1">
+        <ListView x:Name="myList" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Grid.Row="1" SelectionChanged="myList_SelectionChanged">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -60,11 +60,24 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <ComboBox x:Name="SortingBy"  HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="2" VerticalAlignment="Center" Width="200"
+        <Grid Grid.Row="2" VerticalAlignment="Center" Margin="10,0,10,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400*"/>
+                <ColumnDefinition Width="400*"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox x:Name="SortingBy"  HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="2" Grid.Column="0"  VerticalAlignment="Center" Width="200"
                   IsEditable="True" IsReadOnly="True" Text="Без сортировки" SelectionChanged="SortingComboBox_SelectionChanged">
-            <ComboBoxItem Content="Без сортировки"/>
-            <ComboBoxItem Content="Сортировать по возрастанию"/>
-            <ComboBoxItem Content="Сортировать по убыванию"/>
-        </ComboBox>
+                <ComboBoxItem Content="Без сортировки"/>
+                <ComboBoxItem Content="Сортировать по возрастанию"/>
+                <ComboBoxItem Content="Сортировать по убыванию"/>
+            </ComboBox>
+            <Button x:Name="basket" Content="Корзина" HorizontalAlignment="Left" Visibility="Hidden" VerticalAlignment="Center" Height="25" Width="240" FontSize="20" FontWeight="Bold" FontFamily="Times New Roman" Background="#498c51" Click="Busket_Click" Grid.Column="1" Margin="140,0,0,0">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </Grid>
     </Grid>
 </Window>

@@ -16,6 +16,7 @@ namespace Preddiplom_practice
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static User userMain;
         DispatcherTimer _timer;
         TimeSpan _time;
         public MainWindow()
@@ -33,6 +34,7 @@ namespace Preddiplom_practice
                 {
                     if (user.UserLogin == TextBox1.Text && user.UserPassword == TextBox2.Text)
                     {
+                        userMain = user;
                         foreach (Role role in db.Role)
                         {
                             if (user.RoleID == role.RoleID && role.RoleName == "Администратор")
@@ -79,13 +81,14 @@ namespace Preddiplom_practice
                 MessageBox.Show("Произошла ошибка связи с базой данных, исправьте ошибку!");
             }
         }
-        
+
         public void StopAuthoristion(int timeToCount)
         {
             Welcome.Text = "Доступ заблокирован на " + timeToCount + " секунд";
             Welcome.Foreground = Brushes.Red;
             TextBox1.IsEnabled = false;
             TextBox2.IsEnabled = false;
+            EnterAsGuest.IsEnabled = false;
             button1.IsEnabled = false;
             _time = TimeSpan.FromSeconds(timeToCount);
             _timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
@@ -97,12 +100,27 @@ namespace Preddiplom_practice
                     TextBox1.IsEnabled = true;
                     TextBox2.IsEnabled = true;
                     button1.IsEnabled = true;
+                    EnterAsGuest.IsEnabled = true;
                     Welcome.Text = "ДОБРО ПОЖАЛОВАТЬ!";
                     _timer.Stop();
                 }
                 _time = _time.Add(TimeSpan.FromSeconds(-1));
             }, Application.Current.Dispatcher);
             _timer.Start();
+        }
+
+        private void TextBlock_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            try
+            {
+                Windows.UserWindow userWindow = new Windows.UserWindow();
+                this.Close();
+                userWindow.ShowDialog();
+            }
+            catch
+            {
+                MessageBox.Show("Произошла ошибка перехода в окно пользователя!");
+            }
         }
     }
 }

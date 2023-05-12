@@ -17,7 +17,15 @@
         <Rectangle HorizontalAlignment="Stretch" Fill ="#498c51" VerticalAlignment="Stretch" Grid.Row="0"/>
         <TextBlock x:Name="Welcome" TextWrapping="Wrap" Text="ДОБРО ПОЖАЛОВАТЬ!" FontFamily="Times New Roman" FontSize="24" FontWeight="Bold" TextAlignment="Left" VerticalAlignment="Center" Height="38" HorizontalAlignment="Center"/>
         <Rectangle HorizontalAlignment="Stretch" Fill ="#498c51" VerticalAlignment="Stretch" Grid.Row="4"/>
-        <TextBlock TextWrapping="Wrap" Text="Made by Fakhrutdinov Marat" FontFamily="Times New Roman" FontSize="20" FontWeight="Bold" TextAlignment="Center" VerticalAlignment="Center" Margin="50,0,50,0" Height="24" Grid.Row="4"/>
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="50*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock TextWrapping="Wrap" Text="Made by Fakhrutdinov Marat" FontFamily="Times New Roman" FontSize="18" FontWeight="Bold" TextAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" Grid.Column="0" HorizontalAlignment="Center"/>
+            <TextBlock x:Name="EnterAsGuest" TextWrapping="Wrap" Text="Войти как гость" FontFamily="Times New Roman" FontSize="18" FontWeight="Bold" TextAlignment="Center" VerticalAlignment="Center" Margin="0,0,20,0" Grid.Column="1" Foreground="#FF001AFF" HorizontalAlignment="Right" 
+                       TextDecorations="Underline" PreviewMouseDown="TextBlock_PreviewMouseDown" />
+        </Grid>
         <TextBox x:Name="TextBox1" Margin="0,0,0,0" Grid.Row="1" TextWrapping="Wrap" Width="480" Height="25" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
         <TextBox x:Name="TextBox2" HorizontalAlignment="Stretch" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Stretch" Width="480" Height="25" VerticalContentAlignment="Center"/>
         <Button x:Name="button1" Content="ВОЙТИ" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="35" Width="240" FontSize="20" FontWeight="Bold" FontFamily="Times New Roman" Background="#498c51" Click="Enter_Click" Grid.Row="3">
@@ -27,6 +35,5 @@
                 </Style>
             </Button.Resources>
         </Button>
-        <Image HorizontalAlignment="Left" Height="50" Margin="10,0,0,0" VerticalAlignment="Center" Width="50" RenderTransformOrigin="1.08,0.492"/>
     </Grid>
 </Window>
