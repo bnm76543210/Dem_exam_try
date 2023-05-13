@@ -11,25 +11,29 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using iTextSharp.text;
 using System.IO;
 using System.Windows.Shapes;
-using Paragraph = iTextSharp.text.Paragraph;
+using Microsoft.Office.Interop.Word;
+using Window = System.Windows.Window;
+using Application = Microsoft.Office.Interop.Word.Application;
 
 namespace Preddiplom_practice.Windows
 {
     /// <summary>
     /// Логика взаимодействия для Basket.xaml
     /// </summary>
+
     public partial class Basket : Window
     {
         public List<FiilingList> fiilingLists = new List<FiilingList>();
         public List<OrderProduct> orderProducts = new List<OrderProduct>();
+        public decimal allSum = 0;
+        public decimal discountSum = 0;
         public Basket()
         {
             InitializeComponent();
             FillListOfProducts();
-            if(MainWindow.userMain != null)
+            if (MainWindow.userMain != null)
             {
                 UserLabel.Content = MainWindow.userMain.UserSurname + " " + MainWindow.userMain.UserName + " " + MainWindow.userMain.UserPatronymic;
             }
@@ -57,6 +61,7 @@ namespace Preddiplom_practice.Windows
             {
                 if (PointOfIssue.SelectedItem != null)
                 {
+                    string str = "";
                     Preddiplom_practiceEntities db = new Preddiplom_practiceEntities();
                     Order order = new Order();
                     order.OrderStatusID = 1;
@@ -80,56 +85,41 @@ namespace Preddiplom_practice.Windows
                     }
                     Random random = new Random();
                     order.OrderGetCode = random.Next(100, 1000);
-                    MessageBox.Show("Marat tried");
                     db.Order.Add(order);
                     db.SaveChanges();
                     foreach (Product product in UserWindow.productsInBasket)
                     {
-                        OrderProduct productOrder = new OrderProduct();                   
+                        OrderProduct productOrder = new OrderProduct();
                         productOrder.OrderID = order.OrderID;
                         productOrder.ProductID = product.ProductID;
                         productOrder.Count = UserWindow.productsInBasket.Count(x => x == product);
-                        if(productOrder.Count > 1)
-                        {
-                            UserWindow.productsInBasket.Distinct().Where(x => x == product);
-                        }
+                        orderProducts.Add(productOrder);
+                    }
+                    orderProducts = orderProducts.GroupBy(x => x.ProductID).Select(x => x.First()).ToList();
+                    foreach (OrderProduct productOrder in orderProducts)
+                    {
                         db.OrderProduct.Add(productOrder);
                     }
                     db.SaveChanges();
-                    Application app = new Application();
-                    Document document = new Document();
-                    PdfWriter.GetInstance(document, new FileStream("example.pdf", FileMode.Create));
-                    document.Open();
-
-                    // Добавление текста в PDF файл
-                    Paragraph paragraph = new Paragraph("Дата заказа: " + order.OrderCreateDate + "\n");
-                    document.Add(paragraph);
-                    Paragraph paragraph1 = new Paragraph("Дата заказа: " + order.OrderCreateDate + "\n");
-                    document.Add(paragraph1);
-                    Paragraph paragraph1 = new Paragraph("Дата заказа: " + order.OrderCreateDate + "\n");
-                    document.Add(paragraph1);
-                    Paragraph paragraph1 = new Paragraph("Дата заказа: " + order.OrderCreateDate + "\n");
-                    document.Add(paragraph1);
-                    Paragraph paragraph1 = new Paragraph("Дата заказа: " + order.OrderCreateDate + "\n");
-                    document.Add(paragraph1);
-                    Paragraph paragraph1 = new Paragraph("Дата заказа: " + order.OrderCreateDate + "\n");
-                    document.Add(paragraph1);
-                    Paragraph paragraph1 = new Paragraph("Дата заказа: " + order.OrderCreateDate + "\n");
-                    document.Add(paragraph1);
-                    // Закрытие PDF файла
-                    document.Close();
-                    Document doc = app.Documents.Add();
-                    doc.Content.Text += "Дата заказа: " + order.OrderCreateDate + "\n" +
-                                       "Номер заказа: " + order.OrderID + "\n" +
-                                       "Состав заказа: " + "\n" + GetProductsInOrderString(str) + "\n" +
-                                       "Сумма заказа: " + TotalSumOfOrder + "\n" +
-                                       "Сумма скидки: " + TotalSumOfOrderWithDiscounts + "\n" +
-                                       "Пункт выдачи: " + UserProductWindow.currentOrder.PickupPoint.Address + "\n" +
-                                       "Код получения: " + UserProductWindow.currentOrder.OrderGetCode + "\n";
-                    doc.SaveAs(@"B:\Dem_exam_try-master\check.pdf", WdSaveFormat.wdFormatPDF);
-                    Process.Start(@"B:\Dem_exam_try-master\check.pdf");
-                    doc.Close();
-                    app.Quit();
+                    str = "Дата заказа: " + order.OrderCreateDate + "\n" +
+                          "Номер заказа: " + order.OrderID + "\n" +
+                          "Состав заказа: " + "\n" + GetProductsInOrderString("") + "\n" +
+                          "Сумма заказа: " + allSum + "\n" +
+                          "Сумма скидки: " + discountSum + "\n" +
+                          "Пункт выдачи: " + PointOfIssue.Text + "\n" +
+                          "Код получения: " + order.OrderGetCode + "\n";
+                    Application wordApp = new Application();
+                    Document wordDoc = wordApp.Documents.Add();
+                    Microsoft.Office.Interop.Word.Paragraph para = wordDoc.Content.Paragraphs.Add();
+                    para.Range.Text = str;
+                    para.Range.Font.Name = "Arial";
+                    para.Range.Font.Size = 12;
+                    para.Range.InsertParagraphAfter();
+                    string pdfFilePath = @"F:\Order.pdf";
+                    wordDoc.SaveAs2(pdfFilePath, WdExportFormat.wdExportFormatPDF);
+                    UserWindow.productsInBasket.Clear();
+                    UserWindow.userWindow1.basket.Visibility = Visibility.Hidden;
+                    this.Close();
                 }
                 else
                 {
@@ -140,6 +130,29 @@ namespace Preddiplom_practice.Windows
             {
                 MessageBox.Show("Произошла ошибка связи с базой данных, исправьте ошибку!");
             }
+        }
+        public string GetProductsInOrderString(string str)
+        {
+            decimal totalSum = 0;
+            decimal totalDiscountSum = 0;
+            foreach (Product product in UserWindow.productsInBasket)
+            {
+                totalSum += product.ProductCost * UserWindow.productsInBasket.Count;
+                totalDiscountSum +=
+                    (decimal)(product.ProductCost * product.ProductDiscountAmount / 100 * UserWindow.productsInBasket.Count);
+                str += "Артикул: " + product.ProductArticleNumber + "\n";
+                str += "Наименование: " + product.ProductName + "\n";
+                str += "Единица измерения: " + product.UnitType.UnitTypeName + "\n";
+                str += "Цена: " + (product.ProductCost * UserWindow.productsInBasket.Count) + "\n";
+                str += "Поставщик: " + product.ProductSupplier.ProductSupplierName + "\n";
+                str += "Категория: " + product.ProductCategory.ProductCategoryName + "\n";
+                str += "Скидка: " + product.ProductDiscountAmount + "%\n";
+                str += "Описание: " + product.ProductDescription + "\n";
+                str += "\n";
+            }
+            allSum = totalSum;
+            discountSum = totalDiscountSum;
+            return str;
         }
 
         private void myList_SelectionChanged(object sender, SelectionChangedEventArgs e)

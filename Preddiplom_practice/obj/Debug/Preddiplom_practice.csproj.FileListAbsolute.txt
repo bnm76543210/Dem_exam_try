@@ -128,3 +128,7 @@ B:\Dem_exam_try-master\Preddiplom_practice\obj\Debug\Windows\RedactingProduct.g.
 B:\Dem_exam_try-master\Preddiplom_practice\obj\Debug\Windows\RedactingProduct.baml
 B:\Dem_exam_try-master\Preddiplom_practice\obj\Debug\Windows\Basket.g.cs
 B:\Dem_exam_try-master\Preddiplom_practice\obj\Debug\Windows\Basket.baml
+B:\Dem_exam_try-master\Preddiplom_practice\bin\Debug\BouncyCastle.Crypto.dll
+B:\Dem_exam_try-master\Preddiplom_practice\bin\Debug\itextsharp.dll
+B:\Dem_exam_try-master\Preddiplom_practice\bin\Debug\itextsharp.xml
+B:\Dem_exam_try-master\Preddiplom_practice\bin\Debug\ru\EntityFramework.SqlServer.resources.dll
